@@ -1,8 +1,16 @@
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
 
 const ConfettiComponent = () => {
+  const { width, height } = useWindowSize();
+
   const [numberOfPieces, setNumberOfPieces] = useState(400); // Start with 200 confetti pieces
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  useEffect(() => {
+    setPageLoaded(true);
+  }, []);
 
   useEffect(() => {
     // Start fading out the confetti after 5 seconds
@@ -24,11 +32,19 @@ const ConfettiComponent = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <div>
-      {numberOfPieces > 0 && <Confetti numberOfPieces={numberOfPieces} />}
-    </div>
-  );
+  if (pageLoaded) {
+    return (
+      <div>
+        {numberOfPieces > 0 && (
+          <Confetti
+            numberOfPieces={numberOfPieces}
+            width={width}
+            height={height}
+          />
+        )}
+      </div>
+    );
+  }
 };
 
 export default ConfettiComponent;
