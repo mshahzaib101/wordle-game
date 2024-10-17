@@ -11,14 +11,18 @@
   "dependencies": {
     "@headlessui/react": "^2.1.10",
     "@heroicons/react": "^2.1.5",
+    "clsx": "^2.1.1",
     "firebase": "^10.14.1",
+    "framer-motion": "^11.11.9",
     "next": "14.2.15",
     "react": "^18",
     "react-confetti": "^6.1.0",
     "react-dom": "^18",
+    "react-element-to-jsx-string": "^15.0.0",
     "react-select": "^5.8.1",
     "react-toastify": "^10.0.6",
     "react-use": "^17.5.1",
+    "tailwind-merge": "^2.5.4",
     "uuid": "^10.0.0"
   },
   "devDependencies": {
