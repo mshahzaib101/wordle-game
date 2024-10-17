@@ -1,4 +1,24 @@
+"use client";
+
+import { startNewGame } from "@/services/game";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+
 const GameIntro = () => {
+  const router = useRouter();
+
+  const startNewGameHandler = async () => {
+    try {
+      const { gameId } = await startNewGame();
+      console.log("Game ID:", gameId);
+
+      router.push(`/play/${gameId}`);
+    } catch (err) {
+      console.log("err", err);
+      toast.error("Failed to start a new game.");
+    }
+  };
+
   return (
     <div className="relative isolate pt-14 z-0">
       <div
@@ -23,7 +43,14 @@ const GameIntro = () => {
               Ready to test your word skills? Make your guesses and see if you
               can crack the code before time runs out!
             </p>
-           
+            <div className="flex items-center justify-center gap-x-6">
+              <button
+                onClick={startNewGameHandler}
+                className="text-sm font-semibold leading-6 text-gray-900"
+              >
+                Start Game <span aria-hidden="true">→</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
