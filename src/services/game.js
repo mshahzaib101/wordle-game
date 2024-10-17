@@ -39,7 +39,7 @@ export const submitGuess = async (gameId, guess) => {
       throw new Error(data.error || "Failed to validate guess.");
     }
 
-    // Return the feedback, guess history, isCorrect flag, hasLost flag, and possibly the answer
+    // Return the feedback, guess history, gameStatus, isCorrect flag, hasLost flag, and possibly the answer
     return data;
   } catch (err) {
     console.error("Error submitting guess:", err);

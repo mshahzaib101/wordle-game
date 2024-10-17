@@ -25,6 +25,7 @@ export async function POST() {
         maxRounds,
         wordsList, // Store the words list in this game
         currentRound: 0, // Initialize the current round to 0
+        gameStatus: "playing",
       });
 
       return new Response(JSON.stringify({ gameId, maxRounds }), {

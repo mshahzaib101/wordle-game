@@ -9,11 +9,11 @@ export const metadata = {
 
 export default async function PlayPage({ params }) {
   const { gameId } = params;
-  const { maxRounds, guessHistory } = await getGameHistory(gameId);
+  const gameHistory = await getGameHistory(gameId);
 
   return (
     <div>
-      <Play maxRounds={maxRounds} guessHistory={guessHistory} />
+      <Play gameHistory={gameHistory} />
     </div>
   );
 }

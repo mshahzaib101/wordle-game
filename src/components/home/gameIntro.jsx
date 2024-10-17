@@ -10,7 +10,6 @@ const GameIntro = () => {
   const startNewGameHandler = async () => {
     try {
       const { gameId } = await startNewGame();
-      console.log("Game ID:", gameId);
 
       router.push(`/play/${gameId}`);
     } catch (err) {

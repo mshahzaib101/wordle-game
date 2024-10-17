@@ -5,19 +5,37 @@ import ConfettiComponent from "@/components/play/confetti";
 import GameConfigStateContext from "@/contexts/gameConfigStateContext";
 import { startNewGame, submitGuess } from "@/services/game";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export default function GameBoard({ maxRounds, guessHistory }) {
+export default function GameBoard({ gameHistory }) {
   const params = useParams();
+  const router = useRouter();
+
   const gameId = params.gameId; // Access gameId from dynamic route
 
-  const [answer, setAnswer] = useState("");
+  const [correctAnswer, setCorrectAnswer] = useState("");
   const [currentGuess, setCurrentGuess] = useState("");
-  const [guesses, setGuesses] = useState([...guessHistory]);
-  const [gameStatus, setGameStatus] = useState("playing");
+  const [guesses, setGuesses] = useState([...gameHistory.guessHistory]);
+  const [gameStatus, setGameStatus] = useState(
+    gameHistory?.gameStatus ?? "playing"
+  );
+
+  useEffect(() => {
+    if (gameStatus === "lost") {
+      const winSound = new Audio("/audios/game-over.mp3");
+      winSound.play();
+    }
+  }, [gameStatus]);
+
+  const playAlertSound = () => {
+    const winSound = new Audio("/audios/alert.mp3");
+    winSound.play();
+  };
 
   const handleGuess = async () => {
     if (currentGuess.length !== 5) {
       toast.error("Please enter a 5-letter word.");
+      playAlertSound();
       return;
     }
 
@@ -28,32 +46,33 @@ export default function GameBoard({ maxRounds, guessHistory }) {
       setGuesses(data.guessHistory); // Update the guess history
       setCurrentGuess("");
 
-      if (data.isCorrect) {
-        setGameStatus("won");
-      } else if (data.hasLost) {
-        setGameStatus("lost");
+      // Update the game status based on the server response
+      setGameStatus(data.gameStatus);
+
+      if (data.gameStatus === "playing") {
+        const winSound = new Audio("/audios/pos-move.mp3");
+        winSound.play();
+      }
+
+      if (data.hasLost) {
         setCorrectAnswer(data.answer); // Set the correct answer if the user has lost
       }
     } catch (err) {
       // Show error if the word is not in the list
       if (err.message === "The word is not in the list.") {
         toast.warn("This word is not in the list.");
+        playAlertSound();
       } else {
         toast.error("Error submitting guess: " + err.message);
       }
     }
   };
 
-  const restartGame = () => {
-    setGameStatus("playing");
-    setGuesses([]);
-  };
-
   const startNewGameHandler = async () => {
     try {
-      const gameId = await startNewGame();
-      console.log("Game ID:", gameId);
-      // setGameId(gameId);
+      const { gameId } = await startNewGame();
+
+      router.push(`/play/${gameId}`);
     } catch (err) {
       console.log("err", err);
       toast.error("Failed to start a new game.");
@@ -87,7 +106,7 @@ export default function GameBoard({ maxRounds, guessHistory }) {
       )}
 
       <div className="grid grid-rows-6 gap-2">
-        {Array.from({ length: maxRounds }).map((_, rowIndex) => (
+        {Array.from({ length: gameHistory.maxRounds }).map((_, rowIndex) => (
           <div key={rowIndex} className="grid grid-cols-5 gap-2">
             {Array.from({ length: 5 }).map((_, colIndex) => {
               const guess = guesses[rowIndex];
@@ -116,26 +135,27 @@ export default function GameBoard({ maxRounds, guessHistory }) {
         {gameStatus === "won" && (
           <div className="mt-4 text-green-600 font-bold text-center">
             Congratulations! You won!
-            <ConfettiComponent />
           </div>
         )}
         {gameStatus === "lost" && (
           <div className="mt-4 text-red-600 font-bold text-center">
-            Game Over! The word was {answer}.
+            Game Over! The word was {correctAnswer}.
           </div>
         )}
 
         {gameStatus !== "playing" && (
           <div className="flex items-center justify-center gap-x-6">
             <button
-              onClick={restartGame}
+              onClick={startNewGameHandler}
               className="text-sm font-semibold leading-6 text-gray-900"
             >
-              Restart <span aria-hidden="true">→</span>
+              Play Again <span aria-hidden="true">→</span>
             </button>
           </div>
         )}
       </div>
+
+      {gameStatus === "won" && <ConfettiComponent />}
     </div>
   );
 }
