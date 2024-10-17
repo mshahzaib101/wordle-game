@@ -20,7 +20,12 @@ export async function POST() {
 
       // Save the random word as the answer in the Firestore games collection with the generated gameId
       const gameDocRef = doc(db, "games", gameId);
-      await setDoc(gameDocRef, { answer: randomWord, maxRounds });
+      await setDoc(gameDocRef, {
+        answer: randomWord,
+        maxRounds,
+        wordsList, // Store the words list in this game
+        currentRound: 0, // Initialize the current round to 0
+      });
 
       return new Response(JSON.stringify({ gameId, maxRounds }), {
         status: 200,

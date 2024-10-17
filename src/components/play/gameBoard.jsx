@@ -6,26 +6,14 @@ import GameConfigStateContext from "@/contexts/gameConfigStateContext";
 import { startNewGame, submitGuess } from "@/services/game";
 import { useParams } from "next/navigation";
 
-export default function GameBoard({ maxRounds }) {
+export default function GameBoard({ maxRounds, guessHistory }) {
   const params = useParams();
   const gameId = params.gameId; // Access gameId from dynamic route
 
   const [answer, setAnswer] = useState("");
   const [currentGuess, setCurrentGuess] = useState("");
-  const [guesses, setGuesses] = useState([]);
+  const [guesses, setGuesses] = useState([...guessHistory]);
   const [gameStatus, setGameStatus] = useState("playing");
-
-  const { wordsList } = useContext(GameConfigStateContext);
-
-  const resetAnswer = useCallback(() => {
-    const randomWord =
-      wordsList[Math.floor(Math.random() * wordsList.length)].toUpperCase();
-    setAnswer(randomWord);
-  }, [setAnswer]);
-
-  useEffect(() => {
-    resetAnswer();
-  }, []);
 
   const handleGuess = async () => {
     if (currentGuess.length !== 5) {
@@ -37,26 +25,27 @@ export default function GameBoard({ maxRounds }) {
       // Call the submitGuess function from the services
       const data = await submitGuess(gameId, currentGuess);
 
-      const newGuesses = [
-        ...guesses,
-        { guess: currentGuess, feedback: data.feedback },
-      ];
-      setGuesses(newGuesses);
+      setGuesses(data.guessHistory); // Update the guess history
       setCurrentGuess("");
 
       if (data.isCorrect) {
         setGameStatus("won");
-      } else if (newGuesses.length >= maxRounds) {
+      } else if (data.hasLost) {
         setGameStatus("lost");
+        setCorrectAnswer(data.answer); // Set the correct answer if the user has lost
       }
     } catch (err) {
-      toast.error("Error submitting guess: " + err.message);
+      // Show error if the word is not in the list
+      if (err.message === "The word is not in the list.") {
+        toast.warn("This word is not in the list.");
+      } else {
+        toast.error("Error submitting guess: " + err.message);
+      }
     }
   };
 
   const restartGame = () => {
     setGameStatus("playing");
-    resetAnswer();
     setGuesses([]);
   };
 
@@ -146,8 +135,6 @@ export default function GameBoard({ maxRounds }) {
             </button>
           </div>
         )}
-
-        <p className="text-black">{answer}</p>
       </div>
     </div>
   );

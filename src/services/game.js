@@ -23,6 +23,7 @@ export const startNewGame = async () => {
 // Submit a guess by calling the guess API
 export const submitGuess = async (gameId, guess) => {
   try {
+    // Call the API with the gameId and guess
     const res = await fetch("/api/game/guess", {
       method: "POST",
       headers: {
@@ -32,15 +33,16 @@ export const submitGuess = async (gameId, guess) => {
     });
 
     const data = await res.json();
-    if (res.ok) {
-      return data;
-    } else {
-      throw new Error(data.error || "Failed to submit guess.");
+
+    // Check if the response is OK
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to validate guess.");
     }
+
+    // Return the feedback, guess history, isCorrect flag, hasLost flag, and possibly the answer
+    return data;
   } catch (err) {
     console.error("Error submitting guess:", err);
-    throw err;
+    throw err; // Propagate the error to be handled by the calling code
   }
 };
-
-

@@ -1,5 +1,5 @@
 import Play from "@/components/play";
-import getMaxRounds  from "@/utils/functions/getGameMaxRounds";
+import getGameHistory from "@/utils/functions/getGameHistory";
 
 export const metadata = {
   title: "Play Wordle - Challenge Your Word Skills!",
@@ -9,11 +9,11 @@ export const metadata = {
 
 export default async function PlayPage({ params }) {
   const { gameId } = params;
-  const maxRounds = await getMaxRounds(gameId);
+  const { maxRounds, guessHistory } = await getGameHistory(gameId);
 
   return (
     <div>
-      <Play maxRounds={maxRounds} />
+      <Play maxRounds={maxRounds} guessHistory={guessHistory} />
     </div>
   );
 }
