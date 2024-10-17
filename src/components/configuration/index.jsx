@@ -65,7 +65,7 @@ export default function Config() {
     }
   };
   return (
-    <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+    <div className="isolate  px-6 py-24 sm:py-32 lg:px-8">
       <div
         aria-hidden="true"
         className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
@@ -79,10 +79,10 @@ export default function Config() {
         />
       </div>
       <div className="mx-auto max-w-2xl text-center">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <h1 className="bg-clip-text text-transparent text-center bg-gradient-to-b from-neutral-600 to-white text-4xl font-sans relative z-20 font-bold tracking-tight">
           Game Configuration
-        </h2>
-        <p className="mt-2 text-lg leading-8 text-gray-600">
+        </h1>
+        <p className="mt-1 max-w-xl mx-auto text-sm md:text-lg text-neutral-400 text-center">
           Customize the Wordle game settings
         </p>
       </div>
@@ -91,7 +91,7 @@ export default function Config() {
           <div className="sm:col-span-2">
             <label
               htmlFor="max-rounds"
-              className="block text-sm font-semibold leading-6 text-gray-900"
+              className="block text-sm font-semibold leading-6 text-white"
             >
               Max Rounds
             </label>
@@ -113,7 +113,7 @@ export default function Config() {
           <div className="sm:col-span-2">
             <label
               htmlFor="words-list"
-              className="block text-sm font-semibold leading-6 text-gray-900"
+              className="block text-sm font-semibold leading-6 text-white"
             >
               Words List
             </label>
@@ -148,7 +148,7 @@ export default function Config() {
           <div className="sm:col-span-2">
             <label
               htmlFor="admin-passwords"
-              className="block text-sm font-semibold leading-6 text-gray-900"
+              className="block text-sm font-semibold leading-6 text-white"
             >
               Admin Password
             </label>
@@ -179,7 +179,6 @@ export default function Config() {
           </button>
         </div>
       </div>
-      <Spinner />
     </div>
   );
 }
