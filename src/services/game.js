@@ -46,3 +46,31 @@ export const submitGuess = async (gameId, guess) => {
     throw err; // Propagate the error to be handled by the calling code
   }
 };
+
+// Function to update game configuration
+export const updateGameConfig = async (adminPassword, maxRounds, wordsList) => {
+  try {
+    const response = await fetch("/api/game/updateConfig", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        adminPassword, // Send admin password
+        maxRounds, // Send maxRounds value
+        wordsList, // Send words list (array of strings)
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "Failed to update game configuration");
+    }
+
+    return result; // Return the result if successful
+  } catch (error) {
+    console.error("Error updating game config:", error);
+    throw error; // Propagate the error to the calling code
+  }
+};

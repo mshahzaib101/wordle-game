@@ -4,6 +4,8 @@ import { useState, useContext } from "react";
 import GameConfigStateContext from "@/contexts/gameConfigStateContext";
 import CreatableSelect from "react-select/creatable";
 import { toast } from "react-toastify";
+import { updateGameConfig } from "@/services/game"; // Import the function
+import Spinner from "@/components/common/spinner";
 
 export default function Config() {
   const { maxRounds, setMaxRounds, setWordsList } = useContext(
@@ -13,22 +15,10 @@ export default function Config() {
   const [maxRoundsField, setMaxRoundsField] = useState(maxRounds);
   const [wordsListField, setWordsListField] = useState([]);
   const [adminPasswords, setAdminPasswords] = useState("null");
+  const [updatingConfig, setUpdatingConfig] = useState(false);
 
-  const updateGameConfig = (e) => {
+  const handleUpdateConfig = async (e) => {
     e.preventDefault();
-
-    if (adminPasswords !== process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-      toast.error("Incorrect admin password", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-      return;
-    }
-
     if (wordsListField.length < 3) {
       toast.error("Please enter at least 3 words", {
         position: "top-right",
@@ -41,19 +31,39 @@ export default function Config() {
       return;
     }
 
-    setMaxRounds(maxRoundsField);
-    setWordsList(wordsListField.map((word) => word.label));
+    try {
+      setUpdatingConfig(true);
 
-    toast.success("Game configuration updated", {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-    });
+      await updateGameConfig(
+        adminPasswords,
+        Number(maxRoundsField),
+        wordsListField.map((word) => word.label)
+      );
+
+      toast.success("Game configuration updated successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      setMaxRounds(maxRoundsField);
+      setWordsList(wordsListField.map((word) => word.label));
+    } catch (error) {
+      toast.error(error.message || "Failed to update game configuration", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } finally {
+      setUpdatingConfig(false);
+    }
   };
-
   return (
     <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
       <div
@@ -160,13 +170,16 @@ export default function Config() {
         <div className="mt-10">
           <button
             type="button"
-            className="block w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            onClick={updateGameConfig}
+            className="flex justify-center gap-2 items-center w-full rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            onClick={handleUpdateConfig}
+            disabled={updatingConfig}
           >
+            {updatingConfig && <Spinner />}
             Update
           </button>
         </div>
       </div>
+      <Spinner />
     </div>
   );
 }
