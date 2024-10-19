@@ -3,7 +3,6 @@ import "./globals.css";
 import Header from "@/components/layout/header";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { GameConfigStateContextProvider } from "@/contexts/gameConfigStateContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,11 +27,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black`}
       >
-        <GameConfigStateContextProvider>
-          <Header />
-          {children}
-          <ToastContainer />
-        </GameConfigStateContextProvider>
+        <Header />
+        {children}
+        <ToastContainer />
       </body>
     </html>
   );

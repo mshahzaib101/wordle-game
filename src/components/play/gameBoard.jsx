@@ -2,7 +2,6 @@
 import { useState, useEffect, useRef, useContext } from "react";
 import { toast } from "react-toastify";
 import ConfettiComponent from "@/components/play/confetti";
-import GameConfigStateContext from "@/contexts/gameConfigStateContext";
 import { startNewGame, submitGuess } from "@/services/game";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";

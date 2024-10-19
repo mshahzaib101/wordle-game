@@ -1,18 +1,13 @@
 "use client";
 
-import { useState, useContext } from "react";
-import GameConfigStateContext from "@/contexts/gameConfigStateContext";
+import { useState } from "react";
 import CreatableSelect from "react-select/creatable";
 import { toast } from "react-toastify";
 import { updateGameConfig } from "@/services/game"; // Import the function
 import Spinner from "@/components/common/spinner";
 
 export default function Config() {
-  const { maxRounds, setMaxRounds, setWordsList } = useContext(
-    GameConfigStateContext
-  );
-
-  const [maxRoundsField, setMaxRoundsField] = useState(maxRounds);
+  const [maxRoundsField, setMaxRoundsField] = useState(0);
   const [wordsListField, setWordsListField] = useState([]);
   const [adminPasswords, setAdminPasswords] = useState("null");
   const [updatingConfig, setUpdatingConfig] = useState(false);
@@ -48,9 +43,6 @@ export default function Config() {
         pauseOnHover: true,
         draggable: true,
       });
-
-      setMaxRounds(maxRoundsField);
-      setWordsList(wordsListField.map((word) => word.label));
     } catch (error) {
       toast.error(error.message || "Failed to update game configuration", {
         position: "top-right",
