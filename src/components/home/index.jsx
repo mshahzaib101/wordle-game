@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import BackgroundLines from "@/components/ui/backgroundLines";
 import Spinner from "@/components/common/spinner";
 import { useState } from "react";
+import { playNowSound } from "@/lib/sounds";
 
 export default function Home() {
   const router = useRouter();
@@ -14,6 +15,8 @@ export default function Home() {
   const startNewGameHandler = async () => {
     try {
       setIsLoading(true);
+      playNowSound();
+
       const { gameId } = await startNewGame();
 
       router.push(`/play/${gameId}`);

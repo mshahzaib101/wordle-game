@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import { TextGenerateEffect } from "@/components/ui/textGenerateEffect";
 import Spinner from "@/components/common/spinner";
 import { motion } from "framer-motion";
+import { gameOverSound, gameAlertSound } from "@/lib/sounds";
+import { gamePosMoveSound } from "@/lib/sounds";
 
 export default function GameBoard({ gameHistory }) {
   const params = useParams();
@@ -26,20 +28,14 @@ export default function GameBoard({ gameHistory }) {
 
   useEffect(() => {
     if (gameStatus === "lost") {
-      const winSound = new Audio("/audios/game-over.mp3");
-      winSound.play();
+      gameOverSound();
     }
   }, [gameStatus]);
-
-  const playAlertSound = () => {
-    const winSound = new Audio("/audios/alert.mp3");
-    winSound.play();
-  };
 
   const handleGuess = async () => {
     if (currentGuess.length !== 5) {
       toast.error("Please enter a 5-letter word.");
-      playAlertSound();
+      gameAlertSound();
       return;
     }
 
@@ -56,8 +52,7 @@ export default function GameBoard({ gameHistory }) {
       setGameStatus(data.gameStatus);
 
       if (data.gameStatus === "playing") {
-        const winSound = new Audio("/audios/pos-move.mp3");
-        winSound.play();
+        gamePosMoveSound();
       }
 
       if (data.hasLost) {
@@ -67,7 +62,7 @@ export default function GameBoard({ gameHistory }) {
       // Show error if the word is not in the list
       if (err.message === "The word is not in the list.") {
         toast.warn("This word is not in the list.");
-        playAlertSound();
+        gameAlertSound();
       } else {
         toast.error("Error submitting guess: " + err.message);
       }
@@ -90,7 +85,7 @@ export default function GameBoard({ gameHistory }) {
 
   return (
     <>
-      <motion.div
+      <div
         initial={{
           opacity: 0,
           y: 20,
@@ -103,9 +98,9 @@ export default function GameBoard({ gameHistory }) {
           duration: 0.5,
           ease: [0.4, 0.0, 0.2, 1],
         }}
-        className=""
+        className="z-10"
       >
-        <div className="z-10 flex flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center justify-center p-4">
           {gameStatus === "playing" && (
             <div className="relative w-full flex justify-center max-w-sm">
               <input
@@ -194,7 +189,7 @@ export default function GameBoard({ gameHistory }) {
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {gameStatus === "won" && <ConfettiComponent />}
     </>
