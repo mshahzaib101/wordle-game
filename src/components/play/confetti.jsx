@@ -34,7 +34,7 @@ const ConfettiComponent = () => {
 
   if (pageLoaded) {
     return (
-      <div>
+      <div className="h-screen w-screen fixed top-0 left-0">
         {numberOfPieces > 0 && (
           <Confetti
             numberOfPieces={numberOfPieces}

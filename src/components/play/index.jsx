@@ -48,22 +48,7 @@ export default function Play({ gameHistory }) {
           before time runs out. Good luck—your next move could be the winning
           guess!
         </motion.p>
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={{
-            opacity: 1,
-            y: [20, -5, 0],
-          }}
-          transition={{
-            duration: 0.5,
-            ease: [0.4, 0.0, 0.2, 1],
-          }}
-        >
-          <GameBoard gameHistory={gameHistory} />
-        </motion.div>
+        <GameBoard gameHistory={gameHistory} />
       </HeroHighlight>
     </main>
   );
