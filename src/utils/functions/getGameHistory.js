@@ -1,11 +1,10 @@
 import { db } from "@/lib/firebase";
-import { doc, getDoc } from "firebase/firestore";
 
 export default async function getGameHistory(gameId) {
   try {
     // Fetch maxRounds from the games collection for the given gameId
-    const gameDocRef = doc(db, "games", gameId);
-    const gameDocSnap = await getDoc(gameDocRef);
+    const gameDocRef = db.collection("games").doc(gameId);
+    const gameDocSnap = await gameDocRef.get();
 
     const { maxRounds, guessHistory, gameStatus } = gameDocSnap.data();
     return { maxRounds, gameStatus, guessHistory: guessHistory ?? [] };

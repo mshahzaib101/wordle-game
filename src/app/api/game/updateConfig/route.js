@@ -1,5 +1,4 @@
 import { db } from "@/lib/firebase";
-import { doc, updateDoc } from "firebase/firestore";
 
 export async function POST(request) {
   try {
@@ -38,8 +37,8 @@ export async function POST(request) {
     }
 
     // Update the game configuration in Firestore
-    const configRef = doc(db, "gameConfig", "v1");
-    await updateDoc(configRef, {
+    const configRef = db.collection("gameConfig").doc("v1");
+    await configRef.update({
       maxRounds: maxRounds,
       wordsList: wordsList.map((word) => word.toUpperCase()), // Ensure words are uppercase
     });

@@ -1,5 +1,4 @@
 import { db } from "@/lib/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
 
 export async function POST(request) {
   try {
@@ -8,39 +7,64 @@ export async function POST(request) {
 
     // Validate gameId
     if (!gameId || typeof gameId !== "string" || gameId.trim() === "") {
-      return new Response(JSON.stringify({ error: "Invalid gameId" }), { status: 400 });
+      return new Response(JSON.stringify({ error: "Invalid gameId" }), {
+        status: 400,
+      });
     }
 
     // Validate guess
-    if (!guess || typeof guess !== "string" || guess.length !== 5 || !/^[a-zA-Z]+$/.test(guess)) {
-      return new Response(JSON.stringify({ error: "Invalid guess. It must be a 5-letter word." }), { status: 400 });
+    if (
+      !guess ||
+      typeof guess !== "string" ||
+      guess.length !== 5 ||
+      !/^[a-zA-Z]+$/.test(guess)
+    ) {
+      return new Response(
+        JSON.stringify({ error: "Invalid guess. It must be a 5-letter word." }),
+        { status: 400 }
+      );
     }
 
     // Fetch the game document from Firestore using the gameId
-    const docRef = doc(db, 'games', gameId);
-    const docSnap = await getDoc(docRef);
+    const docRef = db.collection("games").doc(gameId);
+    const docSnap = await docRef.get();
 
     // Check if the game exists
-    if (!docSnap.exists()) {
-      return new Response(JSON.stringify({ error: "Game not found" }), { status: 404 });
+    if (!docSnap.exists) {
+      return new Response(JSON.stringify({ error: "Game not found" }), {
+        status: 404,
+      });
     }
 
     // Get the current game data
-    const { answer, currentRound, maxRounds, wordsList, guessHistory = [], gameStatus } = docSnap.data();
+    const {
+      answer,
+      currentRound,
+      maxRounds,
+      wordsList,
+      guessHistory = [],
+      gameStatus,
+    } = docSnap.data();
 
     // Check if the guessed word is in the words list
     if (!wordsList.includes(guess.toUpperCase())) {
-      return new Response(JSON.stringify({ error: "The word is not in the list." }), { status: 400 });
+      return new Response(
+        JSON.stringify({ error: "The word is not in the list." }),
+        { status: 400 }
+      );
     }
 
     // If the game has already ended, return the current game status
     if (gameStatus === "won" || gameStatus === "lost") {
-      return new Response(JSON.stringify({ error: "Game already ended.", gameStatus }), { status: 400 });
+      return new Response(
+        JSON.stringify({ error: "Game already ended.", gameStatus }),
+        { status: 400 }
+      );
     }
 
     // Generate feedback for the guess
     const feedback = getFeedback(guess, answer);
-    const isCorrect = guess.toUpperCase() === answer;  // Check if the guess is correct
+    const isCorrect = guess.toUpperCase() === answer; // Check if the guess is correct
 
     // Increment the current round
     const updatedRound = currentRound + 1;
@@ -49,7 +73,10 @@ export async function POST(request) {
     const hasLost = updatedRound >= maxRounds && !isCorrect;
 
     // Update the guess history
-    const updatedGuessHistory = [...guessHistory, { guess: guess.toUpperCase(), feedback }];
+    const updatedGuessHistory = [
+      ...guessHistory,
+      { guess: guess.toUpperCase(), feedback },
+    ];
 
     // Determine the game status
     let newGameStatus = "playing";
@@ -60,7 +87,7 @@ export async function POST(request) {
     }
 
     // Update the game document with the new current round, guess history, and game status
-    await updateDoc(docRef, {
+    await docRef.update({
       currentRound: updatedRound,
       guessHistory: updatedGuessHistory,
       gameStatus: newGameStatus, // Store the updated game status
@@ -80,15 +107,17 @@ export async function POST(request) {
     );
   } catch (error) {
     console.error("Error validating guess:", error);
-    return new Response(JSON.stringify({ error: "Failed to validate guess" }), { status: 500 });
+    return new Response(JSON.stringify({ error: "Failed to validate guess" }), {
+      status: 500,
+    });
   }
 }
 
 // Utility function to generate feedback for the guess
 const getFeedback = (guess, answer) => {
   const feedback = [];
-  const answerArray = answer.split("");  // Split answer into characters
-  const guessArray = guess.toUpperCase().split("");  // Ensure the guess is in uppercase and split it
+  const answerArray = answer.split(""); // Split answer into characters
+  const guessArray = guess.toUpperCase().split(""); // Ensure the guess is in uppercase and split it
 
   const usedIndices = [];
 
@@ -96,7 +125,7 @@ const getFeedback = (guess, answer) => {
   for (let i = 0; i < 5; i++) {
     if (guessArray[i] === answerArray[i]) {
       feedback[i] = "hit";
-      usedIndices.push(i);  // Mark this index as used
+      usedIndices.push(i); // Mark this index as used
     }
   }
 
@@ -108,7 +137,7 @@ const getFeedback = (guess, answer) => {
       );
       if (index !== -1) {
         feedback[i] = "present";
-        usedIndices.push(index);  // Mark this index as used
+        usedIndices.push(index); // Mark this index as used
       } else {
         feedback[i] = "miss";
       }
