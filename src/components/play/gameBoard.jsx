@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import ConfettiComponent from "@/components/play/confetti";
 import { startNewGame, submitGuess } from "@/services/game";
@@ -7,9 +7,9 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { TextGenerateEffect } from "@/components/ui/textGenerateEffect";
 import Spinner from "@/components/common/spinner";
-import { motion } from "framer-motion";
 import { gameOverSound, gameAlertSound } from "@/lib/sounds";
 import { gamePosMoveSound } from "@/lib/sounds";
+import { playNowSound } from "@/lib/sounds";
 
 export default function GameBoard({ gameHistory }) {
   const params = useParams();
@@ -74,6 +74,8 @@ export default function GameBoard({ gameHistory }) {
   const startNewGameHandler = async () => {
     try {
       setIsNewGameLoading(true);
+      playNowSound();
+
       const { gameId } = await startNewGame();
 
       router.push(`/play/${gameId}`);
