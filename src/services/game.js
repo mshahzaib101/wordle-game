@@ -1,11 +1,12 @@
 // Start a new game by calling the new game API
-export const startNewGame = async () => {
+export const startNewGame = async (gameMode) => {
   try {
     const res = await fetch("/api/game/new", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ gameMode }),
     });
 
     const data = await res.json();
@@ -72,5 +73,63 @@ export const updateGameConfig = async (adminPassword, maxRounds, wordsList) => {
   } catch (error) {
     console.error("Error updating game config:", error);
     throw error; // Propagate the error to the calling code
+  }
+};
+
+// Function to join a multiplayer game
+export const joinMultiplayerGame = async (gameId, displayName) => {
+  try {
+    // Call the API to join the multiplayer game
+    const res = await fetch("/api/game/multiplayer/join", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        gameId, // The ID of the game the player is joining
+        displayName, // Player's display name
+      }),
+    });
+
+    // Parse the response
+    const data = await res.json();
+
+    // Check if the request was successful
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to join the multiplayer game.");
+    }
+
+    // Return the data including the player ID
+    return data;
+  } catch (error) {
+    console.error("Error joining multiplayer game:", error);
+    throw error;
+  }
+};
+
+// Submit a player guess by calling the guess API
+export const submitPlayerGuess = async (gameId, guess, playerId) => {
+  try {
+    // Call the API with the gameId and guess
+    const res = await fetch("/api/game/multiplayer/guess", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ gameId, playerId, guess }),
+    });
+
+    const data = await res.json();
+
+    // Check if the response is OK
+    if (!res.ok) {
+      throw new Error(data.error || "Failed to validate guess.");
+    }
+
+    // Return the feedback, guess history, gameStatus, isCorrect flag, hasLost flag, and possibly the answer
+    return data;
+  } catch (err) {
+    console.error("Error submitting guess:", err);
+    throw err; // Propagate the error to be handled by the calling code
   }
 };
