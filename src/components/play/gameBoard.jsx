@@ -10,6 +10,7 @@ import Spinner from "@/components/common/spinner";
 import { gameOverSound, gameAlertSound } from "@/lib/sounds";
 import { gamePosMoveSound } from "@/lib/sounds";
 import { playNowSound } from "@/lib/sounds";
+import { motion } from "framer-motion";
 
 export default function GameBoard({ gameHistory }) {
   const params = useParams();
@@ -87,7 +88,7 @@ export default function GameBoard({ gameHistory }) {
 
   return (
     <>
-      <div
+      <motion.div
         initial={{
           opacity: 0,
           y: 20,
@@ -191,7 +192,7 @@ export default function GameBoard({ gameHistory }) {
             )}
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {gameStatus === "won" && <ConfettiComponent />}
     </>
