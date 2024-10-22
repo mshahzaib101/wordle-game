@@ -92,9 +92,6 @@ To access and modify game configurations, go to the `/configuration` page. You w
 - **Max Rounds**: The maximum number of guesses allowed before game over.
 - **Word List**: Add or remove 5-letter words from the list of possible answers.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
