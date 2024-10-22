@@ -1,0 +1,16 @@
+{
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "no-unused-vars": ["error"], // Disallow unused variables
+    "indent": ["error", 2], // Enforce 2-space indentation
+    "semi": ["error", "always"], // Enforce semicolons at the end of statements
+    "no-console": ["warn", { "allow": ["warn", "error"] }], // Disallow console.log but allow console.warn and console.error
+    "eqeqeq": ["error", "always"], // Require the use of === and !== instead of == and !=
+    "no-undef": "error", // Disallow the use of undeclared variables
+    "no-unused-expressions": "error", // Disallow unused expressions
+    "no-multi-spaces": "error", // Disallow multiple spaces except for alignment
+    "prefer-const": ["error"], // Prefer const declarations for variables that are never reassigned after declaration
+    "no-var": "error", // Disallow var and prefer let/const
+    "comma-dangle": ["error", "always-multiline"] // Enforce trailing commas in multiline object and array literals
+  }
+}
