@@ -70,7 +70,6 @@ export async function POST(request) {
       { status: 200 }
     );
   } catch (error) {
-    console.log("error", error);
     return new Response(
       JSON.stringify({
         message: "Error joining the game",

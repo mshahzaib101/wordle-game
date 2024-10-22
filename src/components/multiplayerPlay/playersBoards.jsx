@@ -32,7 +32,7 @@ export default function PlayersBoards({
             <div key={playerId} className="player-board p-4 ">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                  {displayName}'s Board{" "}
+                  {displayName}&apos;s Board{" "}
                   {playerId === currentPlayerId && (
                     <span className="text-gray-500">(You)</span>
                   )}

@@ -53,7 +53,6 @@ export async function POST(request) {
       });
     }
   } catch (error) {
-    console.log("error", error);
     return new Response(JSON.stringify({ error: "Failed to start game" }), {
       status: 500,
     });

@@ -17,7 +17,6 @@ export default function GameBoard({ gameHistory }) {
 
   const gameId = params.gameId; // Access gameId from dynamic route
 
-  const [correctAnswer, setCorrectAnswer] = useState("");
   const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState([...gameHistory.guessHistory]);
   const [gameStatus, setGameStatus] = useState(
@@ -53,10 +52,6 @@ export default function GameBoard({ gameHistory }) {
 
       if (data.gameStatus === "playing") {
         gamePosMoveSound();
-      }
-
-      if (data.hasLost) {
-        setCorrectAnswer(data.answer); // Set the correct answer if the user has lost
       }
     } catch (err) {
       // Show error if the word is not in the list

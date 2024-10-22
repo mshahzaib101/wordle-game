@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import { doc, collection, onSnapshot } from "firebase/firestore";
 import db from "@/lib/firebase/firestore";
 import { TextGenerateEffect } from "@/components/ui/textGenerateEffect";
-
 const GameBoard = () => {
   const params = useParams();
 
@@ -54,7 +53,7 @@ const GameBoard = () => {
       unsubscribeGame(); // Unsubscribe from the game snapshot listener
       unsubscribePlayers(); // Unsubscribe from the players snapshot listener
     };
-  }, [gameId]);
+  }, [gameId, currentPlayerId]);
 
   if (playersData.length > 0) {
     return (

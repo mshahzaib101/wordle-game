@@ -84,7 +84,6 @@ export default function ChooseGameMode() {
                       key={setting.name}
                       value={setting}
                       aria-label={setting.name}
-                      aria-description={setting.description}
                       className={classNames(
                         settingIdx === 0 ? "rounded-tl-md rounded-tr-md" : "",
                         settingIdx === settings.length - 1
