@@ -145,10 +145,6 @@ To update the game settings:
 3. Modify the settings as needed (max rounds, word list).
 4. Save the configuration.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
 ## Contact
 
 For any inquiries or issues, feel free to contact the project maintainer at [mshahzaib101ed@gmail.com].
