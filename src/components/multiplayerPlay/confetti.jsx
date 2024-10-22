@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
+import useWindowSize from "react-use/lib/useWindowSize";
+import { winSound } from "@/lib/sounds";
 
 const ConfettiComponent = () => {
+  const { width, height } = useWindowSize();
+
   const [numberOfPieces, setNumberOfPieces] = useState(400); // Start with 200 confetti pieces
+  const [pageLoaded, setPageLoaded] = useState(false);
+
+  useEffect(() => {
+    setPageLoaded(true);
+  }, []);
 
   useEffect(() => {
     // Start fading out the confetti after 5 seconds
@@ -19,16 +28,23 @@ const ConfettiComponent = () => {
       }, 200); // Adjust the interval for smoother reduction
     }, 3000); // Confetti stays for 5 seconds before starting to reduce
 
-    const winSound = new Audio("/audios/win-sound.mp3");
-    winSound.play();
+    winSound();
     return () => clearTimeout(timer);
   }, []);
 
-  return (
-    <div>
-      {numberOfPieces > 0 && <Confetti numberOfPieces={numberOfPieces} />}
-    </div>
-  );
+  if (pageLoaded) {
+    return (
+      <div className="h-screen w-screen fixed top-0 left-0 -z-10">
+        {numberOfPieces > 0 && (
+          <Confetti
+            numberOfPieces={numberOfPieces}
+            width={width}
+            height={height}
+          />
+        )}
+      </div>
+    );
+  }
 };
 
 export default ConfettiComponent;
