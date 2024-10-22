@@ -162,8 +162,6 @@ export default function GameBoard() {
             </button>
           </div>
         )}
-
-        <p className="text-black">{answer}</p>
       </div>
     </div>
   );
